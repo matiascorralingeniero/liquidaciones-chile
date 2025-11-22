@@ -1,0 +1,482 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.app-container {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  padding: 2rem 1rem;
+}
+
+.content-wrapper {
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+/* Header Card */
+.header-card {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  padding: 2rem;
+  margin-bottom: 2rem;
+}
+
+.header-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.header-title-section {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.header-icon {
+  color: #667eea;
+}
+
+.main-title {
+  font-size: 2rem;
+  font-weight: 800;
+  color: #1a202c;
+  margin: 0;
+}
+
+.subtitle {
+  font-size: 0.9rem;
+  color: #718096;
+  margin: 0.25rem 0 0 0;
+}
+
+.btn-export {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: #48bb78;
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.btn-export:hover {
+  background: #38a169;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(72, 187, 120, 0.4);
+}
+
+/* Indicadores Grid */
+.indicadores-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+  padding: 1.5rem;
+  background: #edf2f7;
+  border-radius: 8px;
+}
+
+.indicador-item {
+  text-align: center;
+}
+
+.indicador-label {
+  font-size: 0.85rem;
+  color: #4a5568;
+  margin-bottom: 0.25rem;
+}
+
+.indicador-value {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #667eea;
+}
+
+/* Trabajador Card */
+.trabajador-card {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  padding: 2rem;
+  margin-bottom: 2rem;
+}
+
+.trabajador-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+.trabajador-title {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #2d3748;
+}
+
+.trabajador-title svg {
+  color: #667eea;
+}
+
+.btn-delete {
+  background: #fed7d7;
+  color: #c53030;
+  border: none;
+  padding: 0.5rem;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.btn-delete:hover {
+  background: #fc8181;
+  color: white;
+}
+
+/* Form Grids */
+.form-grid-2 {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.form-grid-3 {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.form-grid-4 {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.form-group label {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #4a5568;
+  margin-bottom: 0.5rem;
+}
+
+.form-group input,
+.form-group select {
+  padding: 0.75rem;
+  border: 2px solid #e2e8f0;
+  border-radius: 8px;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+  outline: none;
+  border-color: #667eea;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+/* Section Styles */
+.section-haberes,
+.section-descuentos {
+  padding: 1.5rem;
+  border-radius: 8px;
+  margin-bottom: 1.5rem;
+}
+
+.section-haberes {
+  background: #f0fff4;
+  border: 2px solid #9ae6b4;
+}
+
+.section-descuentos {
+  background: #fff5f5;
+  border: 2px solid #fc8181;
+}
+
+.section-title {
+  font-size: 1.1rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+}
+
+.section-haberes .section-title {
+  color: #22543d;
+}
+
+.section-descuentos .section-title {
+  color: #742a2a;
+}
+
+/* Liquidación Result */
+.liquidacion-result {
+  background: #edf2f7;
+  border-radius: 8px;
+  padding: 2rem;
+  margin-top: 1.5rem;
+}
+
+.result-title {
+font-size: 1.3rem;
+font-weight: 700;
+color: #2d3748;
+margin-bottom: 1.5rem;
+text-align: center;
+}
+.result-grid {
+display: grid;
+grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+gap: 2rem;
+margin-bottom: 2rem;
+}
+.result-column {
+background: white;
+padding: 1.5rem;
+border-radius: 8px;
+}
+.column-title {
+font-size: 1.1rem;
+font-weight: 700;
+margin-bottom: 1rem;
+padding-bottom: 0.5rem;
+border-bottom: 3px solid;
+}
+.haberes-title {
+color: #22543d;
+border-color: #9ae6b4;
+}
+.descuentos-title {
+color: #742a2a;
+border-color: #fc8181;
+}
+.result-items {
+display: flex;
+flex-direction: column;
+gap: 0.75rem;
+}
+.result-item {
+display: flex;
+justify-content: space-between;
+align-items: center;
+font-size: 0.95rem;
+color: #4a5568;
+}
+.result-value {
+font-weight: 600;
+color: #2d3748;
+}
+.result-total {
+margin-top: 0.5rem;
+padding-top: 0.75rem;
+border-top: 2px solid;
+font-weight: 700;
+font-size: 1.05rem;
+}
+.haberes-total {
+border-color: #9ae6b4;
+}
+.haberes-total .result-value {
+color: #22543d;
+}
+.descuentos-total {
+border-color: #fc8181;
+}
+.descuentos-total .result-value {
+color: #742a2a;
+}
+/* Sueldo Líquido */
+.sueldo-liquido {
+background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+color: white;
+padding: 1.5rem 2rem;
+border-radius: 8px;
+display: flex;
+justify-content: space-between;
+align-items: center;
+margin-bottom: 1.5rem;
+flex-wrap: wrap;
+gap: 1rem;
+}
+.liquido-label {
+font-size: 1.3rem;
+font-weight: 700;
+}
+.liquido-value {
+font-size: 2rem;
+font-weight: 800;
+}
+/* Costos Empleador */
+.costos-empleador {
+background: #f7fafc;
+padding: 1.5rem;
+border-radius: 8px;
+border: 2px solid #cbd5e0;
+}
+.empleador-title {
+font-size: 1.1rem;
+font-weight: 700;
+color: #4a5568;
+margin-bottom: 1rem;
+}
+.empleador-items {
+display: flex;
+flex-direction: column;
+gap: 0.75rem;
+}
+.empleador-item {
+display: flex;
+justify-content: space-between;
+align-items: center;
+font-size: 0.95rem;
+color: #4a5568;
+}
+.empleador-total {
+margin-top: 0.5rem;
+padding-top: 0.75rem;
+border-top: 2px solid #cbd5e0;
+font-weight: 700;
+font-size: 1.05rem;
+color: #2d3748;
+}
+/* Add Button */
+.add-button-container {
+display: flex;
+justify-content: center;
+margin-bottom: 2rem;
+}
+.btn-add {
+display: flex;
+align-items: center;
+gap: 0.75rem;
+background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+color: white;
+border: none;
+padding: 1rem 2rem;
+border-radius: 8px;
+font-size: 1.1rem;
+font-weight: 700;
+cursor: pointer;
+transition: all 0.3s ease;
+box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+}
+.btn-add:hover {
+transform: translateY(-3px);
+box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+}
+/* Instructions Card */
+.instructions-card {
+background: white;
+border-radius: 12px;
+box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+padding: 2rem;
+}
+.instructions-title {
+display: flex;
+align-items: center;
+gap: 0.75rem;
+font-size: 1.3rem;
+font-weight: 700;
+color: #2d3748;
+margin-bottom: 1.5rem;
+}
+.instructions-title svg {
+color: #667eea;
+}
+.instructions-list {
+list-style: none;
+display: flex;
+flex-direction: column;
+gap: 0.75rem;
+}
+.instructions-list li {
+font-size: 0.95rem;
+color: #4a5568;
+line-height: 1.6;
+padding-left: 0.5rem;
+}
+/* Responsive Design */
+@media (max-width: 768px) {
+.app-container {
+padding: 1rem 0.5rem;
+}
+.header-card,
+.trabajador-card,
+.instructions-card {
+padding: 1.5rem;
+}
+.main-title {
+font-size: 1.5rem;
+}
+.header-content {
+flex-direction: column;
+align-items: flex-start;
+}
+.indicadores-grid {
+grid-template-columns: repeat(2, 1fr);
+}
+.result-grid {
+grid-template-columns: 1fr;
+}
+.sueldo-liquido {
+flex-direction: column;
+align-items: flex-start;
+}
+.liquido-label {
+font-size: 1.1rem;
+}
+.liquido-value {
+font-size: 1.75rem;
+}
+}
+/* Print Styles */
+@media print {
+.app-container {
+background: white;
+padding: 0;
+}
+.btn-export,
+.btn-add,
+.btn-delete,
+.instructions-card {
+display: none !important;
+}
+.trabajador-card {
+page-break-inside: avoid;
+box-shadow: none;
+border: 1px solid #e2e8f0;
+margin-bottom: 1rem;
+}
+.header-card {
+box-shadow: none;
+border: 1px solid #e2e8f0;
+}
+}
