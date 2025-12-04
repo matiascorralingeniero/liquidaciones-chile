@@ -74,7 +74,7 @@ function App() {
   const calcularHorasExtras = (sueldoBase, numHoras) => {
     if (numHoras === 0 || sueldoBase === 0) return { valor: 0, cantidad: 0 };
     
-    // Calcular valor hora base (sueldo mensual / 180 horas mensuales según legislación)
+    // Calcular valor hora base segun leg. chilena
     const valorHora = ((sueldoBase/30)*28)/176;
     
     // Horas extras se pagan al 50% adicional (1.5 veces el valor hora)
@@ -110,9 +110,11 @@ function App() {
     return { descuento: 0, dias: 0, error: null };
   };
 
-  const calcularGratificacionLegal = (sueldoBase, horasExtrasValor) => {
+  const calcularGratificacionLegal = (trabajador, horasExtrasValor ) => {
     // Calcular 25% del imponible (base + horas extras)
-    const imponible = sueldoBase + horasExtrasValor;
+    const diasAusenciaCalc = calcularDiasAusencia(trabajador.sueldoBase, trabajador.diasAusencia);
+    const sueldoBase = parseFloat(trabajador.sueldoBase || 0);
+    const imponible = sueldoBase + horasExtrasValor - diasAusenciaCalc.descuento;
     const gratificacion25 = imponible * 0.25;
     
     // No debe superar el tope legal de 4.75 IMM
@@ -134,7 +136,7 @@ function App() {
     let gratificacionCalculada = 0;
     
     if (trabajador.tieneGratificacionLegal) {
-      gratificacionCalculada = calcularGratificacionLegal(sueldoBase, horasExtrasCalc.valor);
+      gratificacionCalculada = calcularGratificacionLegal(trabajador, horasExtrasCalc.valor);
       gratificacion = gratificacionCalculada;
     } else if (trabajador.tieneGratificacionManual) {
       gratificacion = parseFloat(trabajador.gratificacion || 0);
