@@ -25,7 +25,8 @@ function App() {
       gratificacion: 0,
       tieneGratificacionLegal: false,
       tieneGratificacionManual: false,
-      diasAusencia: 0
+      diasAusencia: 0,
+      tipoContrato: 'indefinido'
     }
   ]);
 
@@ -55,7 +56,9 @@ function App() {
     },
     seguroCesantia: {
       trabajadorIndefinido: 0.6,
-      empleadorIndefinido: 2.4
+      empleadorIndefinido: 2.4,
+      trabajadorPlazoFijo: 0,
+      empleadorPlazoFijo: 3.0
     },
     asignacionFamiliar: [
       { limite: 620251, monto: 22007 },
@@ -124,6 +127,7 @@ function App() {
   };
 
   const calcularLiquidacion = (trabajador) => {
+
     const sueldoBase = parseFloat(trabajador.sueldoBase || 0);
     const horasExtrasCalc = calcularHorasExtras(sueldoBase, parseFloat(trabajador.numHorasExtras || 0));
     const bonos = parseFloat(trabajador.bonos || 0);
@@ -152,15 +156,24 @@ function App() {
     const sueldoImponible = Math.min(totalHaberes, indicadores.topeImponible);
     
     let descuentoAFP = 0;
-    let descuentoSIS = 0;
     let descuentoCesantia = 0;
+    let aporteCesantiaEmpleador = 0;
+    let aporteSISEmpleador = 0;
 
     // Si NO es jubilado, calcular AFP, SIS y Cesantía
     if (!trabajador.esJubilado) {
       const afpData = indicadores.afps[trabajador.afp];
       descuentoAFP = sueldoImponible * (afpData.trabajador / 100);
-      descuentoSIS = sueldoImponible * (afpData.sis / 100);
-      descuentoCesantia = sueldoImponible * (indicadores.seguroCesantia.trabajadorIndefinido / 100);
+      
+      if (trabajador.tipoContrato === 'indefinido'){
+        descuentoCesantia = sueldoImponible * 0.006;
+        aporteCesantiaEmpleador = sueldoImponible * 0.024;
+      } else if (trabajador.tipoContrato === 'plazo_fijo'){
+        descuentoCesantia = 0;
+        aporteCesantiaEmpleador = sueldoImponible * 0.030;
+      }
+
+      aporteSISEmpleador = sueldoImponible * (afpData.sis/100);
     }
     
     let descuentoSalud = 0;
@@ -173,14 +186,12 @@ function App() {
     const anticipos = parseFloat(trabajador.anticipos || 0);
     const prestamos = parseFloat(trabajador.prestamos || 0);
     
-    const totalDescuentos = descuentoAFP + descuentoSIS + descuentoSalud + descuentoCesantia + anticipos + prestamos;
+    const totalDescuentos = descuentoAFP + descuentoSalud + descuentoCesantia + anticipos + prestamos;
     const totalHaberesLiquido = totalHaberes + colacion + movilizacion + asigFamiliar;
     const sueldoLiquido = totalHaberesLiquido - totalDescuentos;
 
     // Costos empleador (si NO es jubilado)
-    let aporteCesantiaEmpleador = 0;
-    let aporteSISEmpleador = 0;
-    
+
     if (!trabajador.esJubilado) {
       const afpData = indicadores.afps[trabajador.afp];
       aporteCesantiaEmpleador = sueldoImponible * (indicadores.seguroCesantia.empleadorIndefinido / 100);
@@ -203,7 +214,6 @@ function App() {
       asigFamiliar,
       totalHaberesLiquido,
       descuentoAFP,
-      descuentoSIS,
       descuentoSalud,
       descuentoCesantia,
       anticipos,
@@ -239,7 +249,8 @@ function App() {
       gratificacion: 0,
       tieneGratificacionLegal: false,
       tieneGratificacionManual: false,
-      diasAusencia: 0
+      diasAusencia: 0,
+      tipoContrato: 'indefinido'
     }]);
   };
 
@@ -343,7 +354,7 @@ function App() {
 
         {trabajadores.map((trabajador, index) => {
           const liquidacion = calcularLiquidacion(trabajador);
-          const mesFormateado = mesPago ? new Date(mesPago + '-01').toLocaleDateString('es-CL', { year: 'numeric', month: 'long' }) : '';
+          const mesFormateado = mesPago ? new Date(mesPago + '-15').toLocaleDateString('es-CL', { year: 'numeric', month: 'long' }) : '';
           
           return (
             <div key={trabajador.id}>
@@ -401,6 +412,22 @@ function App() {
                       />
                       <span>¿Es jubilado/pensionado?</span>
                     </label>
+                  </div>
+
+                  <div className="form-group">
+                  <label>Tipo de Contrato</label>
+                  <select
+                  value={trabajador.tipoContrato}
+                  onChange={(e) => actualizarTrabajador(trabajador.id, 'tipoContrato', e.target.value)}
+                  >
+                  <option value="indefinido">Contrato Indefinido</option>
+                  <option value="plazo_fijo">Contrato Plazo Fijo/Obra/Faena</option>
+                  </select>
+                  {trabajador.tipoContrato === 'plazo_fijo' && (
+                  <small className="helper-text">
+                  ℹ️ Empleador aporta 3.0% (trabajador no descuenta AFC)
+                  </small>
+                   )}
                   </div>
                   
                   {!trabajador.esJubilado && (
@@ -667,49 +694,51 @@ function App() {
                               <span>AFP ({indicadores.afps[trabajador.afp].trabajador}%):</span>
                               <span className="result-value">${Math.round(liquidacion.descuentoAFP).toLocaleString('es-CL')}</span>
                             </div>
-                            <div className="result-item">
-                              <span>SIS ({indicadores.afps[trabajador.afp].sis}%):</span>
-                              <span className="result-value">${Math.round(liquidacion.descuentoSIS).toLocaleString('es-CL')}</span>
-</div>
-</>
-) : (
-<div className="result-item">
-<span className="jubilado-tag">👴 JUBILADO - No cotiza AFP ni SIS</span>
-</div>
-)}
-<div className="result-item">
-<span>Salud:</span>
-<span className="result-value">${Math.round(liquidacion.descuentoSalud).toLocaleString('es-CL')}</span>
-</div>
-{!trabajador.esJubilado ? (
-<div className="result-item">
-<span>Seguro Cesantía (0.6%):</span>
-<span className="result-value">${Math.round(liquidacion.descuentoCesantia).toLocaleString('es-CL')}</span>
-</div>
-) : (
-<div className="result-item">
-<span className="jubilado-tag">No cotiza AFC (Jubilado)</span>
-</div>
-)}
-{liquidacion.anticipos > 0 && (
-<div className="result-item">
-<span>Anticipos:</span>
-<span className="result-value">${liquidacion.anticipos.toLocaleString('es-CL')}</span>
-</div>
-)}
-{liquidacion.prestamos > 0 && (
-<div className="result-item">
-<span>Préstamos:</span>
-<span className="result-value">${liquidacion.prestamos.toLocaleString('es-CL')}</span>
-</div>
-)}
-<div className="result-item result-total descuentos-total">
-<span>Total Descuentos:</span>
-<span className="result-value">${Math.round(liquidacion.totalDescuentos).toLocaleString('es-CL')}</span>
-</div>
-</div>
-</div>
-</div>
+              </>
+              ) : (
+              <div className="result-item">
+              <span className="jubilado-tag">👴 JUBILADO - No cotiza AFP ni SIS</span>
+              </div>
+              )}
+              <div className="result-item">
+              <span>Salud:</span>
+              <span className="result-value">${Math.round(liquidacion.descuentoSalud).toLocaleString('es-CL')}</span>
+              </div>
+              {!trabajador.esJubilado && trabajador.tipoContrato === 'indefinido' && (
+              <div className="result-item">
+                <span>Seguro Cesantía (0.6%):</span>
+                <span className="result-value">${Math.round(liquidacion.descuentoCesantia).toLocaleString('es-CL')}</span>
+              </div>
+              )}
+              {!trabajador.esJubilado && trabajador.tipoContrato === 'plazo_fijo' && (
+                <div className="result-item">
+                  <span className="jubilado-tag">Sin descuento AFC (Plazo Fijo)</span>
+                </div>
+              )}
+              {trabajador.esJubilado && (
+                <div className="result-item">
+                  <span className="jubilado-tag">No cotiza AFC (Jubilado)</span>
+                </div>
+              )}
+              {liquidacion.anticipos > 0 && (
+              <div className="result-item">
+              <span>Anticipos:</span>
+              <span className="result-value">${liquidacion.anticipos.toLocaleString('es-CL')}</span>
+              </div>
+              )}
+              {liquidacion.prestamos > 0 && (
+              <div className="result-item">
+              <span>Préstamos:</span>
+              <span className="result-value">${liquidacion.prestamos.toLocaleString('es-CL')}</span>
+              </div>
+              )}
+              <div className="result-item result-total descuentos-total">
+              <span>Total Descuentos:</span>
+              <span className="result-value">${Math.round(liquidacion.totalDescuentos).toLocaleString('es-CL')}</span>
+              </div>
+              </div>
+              </div>
+              </div>
               <div className="sueldo-liquido">
                 <span className="liquido-label">SUELDO LÍQUIDO A PAGAR:</span>
                 <span className="liquido-value">${Math.round(liquidacion.sueldoLiquido).toLocaleString('es-CL')}</span>
@@ -718,18 +747,21 @@ function App() {
               <div className="costos-empleador">
                 <h4 className="empleador-title">Costos del Empleador</h4>
                 <div className="empleador-items">
-                  {!trabajador.esJubilado && (
-                    <>
-                      <div className="empleador-item">
-                        <span>Cesantía Empleador (2.4%):</span>
-                        <span>${Math.round(liquidacion.aporteCesantiaEmpleador).toLocaleString('es-CL')}</span>
-                      </div>
-                      <div className="empleador-item">
-                        <span>SIS Empleador (0.1%):</span>
-                        <span>${Math.round(liquidacion.aporteSISEmpleador).toLocaleString('es-CL')}</span>
-                      </div>
-                    </>
-                  )}
+                 {!trabajador.esJubilado && (
+                  <>
+                    <div className="empleador-item">
+                      <span>
+                        Cesantía Empleador ({trabajador.tipoContrato === 'plazo_fijo' ? '3.0%' : '2.4%'})
+                        {trabajador.tipoContrato === 'plazo_fijo' && ' - Plazo Fijo'}:
+                      </span>
+                      <span>${Math.round(liquidacion.aporteCesantiaEmpleador).toLocaleString('es-CL')}</span>
+                    </div>
+                    <div className="empleador-item">
+                      <span>SIS Empleador (0.1%):</span>
+                      <span>${Math.round(liquidacion.aporteSISEmpleador).toLocaleString('es-CL')}</span>
+                    </div>
+                  </>
+                )}
                   <div className="empleador-item">
                     <span>Salud CCAF (4.5%):</span>
                     <span>${Math.round(liquidacion.saludEmpleador).toLocaleString('es-CL')}</span>
@@ -772,7 +804,6 @@ function App() {
                 </div>
               )}
             </div>
-
             <table className="tabla-liquidacion">
               <thead>
                 <tr>
@@ -848,10 +879,6 @@ function App() {
                       <td>AFP ({indicadores.afps[trabajador.afp].trabajador}%) - {trabajador.afp}</td>
                       <td className="monto">${Math.round(liquidacion.descuentoAFP).toLocaleString('es-CL')}</td>
                     </tr>
-                    <tr>
-                      <td>Seguro de Invalidez y Sobrevivencia ({indicadores.afps[trabajador.afp].sis}%)</td>
-                      <td className="monto">${Math.round(liquidacion.descuentoSIS).toLocaleString('es-CL')}</td>
-                    </tr>
                   </>
                 ) : (
                   <tr>
@@ -862,12 +889,20 @@ function App() {
                   <td>Salud - {trabajador.isapre === 'Fonasa' ? 'Fonasa (7%)' : `Isapre (${trabajador.planIsapre}%)`}</td>
                   <td className="monto">${Math.round(liquidacion.descuentoSalud).toLocaleString('es-CL')}</td>
                 </tr>
-                {!trabajador.esJubilado ? (
+                {!trabajador.esJubilado && trabajador.tipoContrato === 'indefinido' && (
+                <tr>
+                  <td>Seguro de Cesantía (0.6%)</td>
+                  <td className="monto">${Math.round(liquidacion.descuentoCesantia).toLocaleString('es-CL')}</td>
+                </tr>
+                )}
+                {!trabajador.esJubilado && trabajador.tipoContrato === 'plazo_fijo' && (
                   <tr>
-                    <td>Seguro de Cesantía (0.6%)</td>
-                    <td className="monto">${Math.round(liquidacion.descuentoCesantia).toLocaleString('es-CL')}</td>
+                    <td colSpan="2" className="jubilado-nota">
+                      Sin descuento AFC - Contrato Plazo Fijo (solo empleador cotiza 3.0%)
+                    </td>
                   </tr>
-                ) : (
+                )}
+                {trabajador.esJubilado && (
                   <tr>
                     <td colSpan="2" className="jubilado-nota">No cotiza AFC (Trabajador Jubilado)</td>
                   </tr>
