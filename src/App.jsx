@@ -34,8 +34,10 @@ function App() {
   const [nombreEmpresa, setNombreEmpresa] = useState('');
   const [rutEmpresa, setRutEmpresa] = useState('');
 
-  // Indicadores Previred Noviembre 2025
+  // Indicadores Previred Enero 2026
   const indicadores = {
+    uf: 39706.07,
+    utm: 69751,
     topeImponible: 3569576,
     sueldoMinimo: 539000,
     topeGratificacion: 539000 * 4.75, // 4.75 IMM
