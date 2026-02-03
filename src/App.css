@@ -14,7 +14,8 @@ body {
 
 .app-container {
   min-height: 100vh;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background-image: url('assets/istockphoto-2221632865-1024x1024.svg');
+  background-size: cover;
   padding: 2rem 1rem;
 }
 
