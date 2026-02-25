@@ -1,0 +1,188 @@
+import { indicadores } from "./indicadores.js";
+
+const calcularAsignacionFamiliar = (sueldoImponible, numCargas) => {
+  if (numCargas === 0) return 0;
+  const tramo = indicadores.asignacionFamiliar.find(
+    (t) => sueldoImponible <= t.limite,
+  );
+  return tramo ? tramo.monto * numCargas : 0;
+};
+
+const calcularHorasExtras = (sueldoBase, numHoras) => {
+  if (numHoras === 0 || sueldoBase === 0) return { valor: 0, cantidad: 0 };
+
+  // Calcular valor hora base segun leg. chilena
+  const valorHora = ((sueldoBase / 30) * 28) / 176;
+
+  // Horas extras se pagan al 50% adicional (1.5 veces el valor hora)
+  const valorHoraExtra = valorHora * 1.5;
+
+  return {
+    valor: valorHoraExtra * numHoras,
+    cantidad: numHoras,
+    valorUnitario: valorHoraExtra,
+  };
+};
+
+const calcularDiasAusencia = (sueldoBase, diasAusencia) => {
+  const dias = parseInt(diasAusencia || 0);
+
+  if (dias === 0) {
+    return { descuento: 0, dias: 0, error: null };
+  }
+
+  if (dias > 30) {
+    return {
+      descuento: 0,
+      dias: dias,
+      error: "La cantidad de días ausentes no puede ser mayor que 30",
+    };
+  }
+
+  if (dias > 0 && dias <= 30) {
+    const descuento = (sueldoBase / 30) * dias;
+    return { descuento, dias, error: null };
+  }
+
+  return { descuento: 0, dias: 0, error: null };
+};
+
+const calcularGratificacionLegal = (trabajador, horasExtrasValor) => {
+  // Calcular 25% del imponible (base + horas extras)
+  const diasAusenciaCalc = calcularDiasAusencia(
+    trabajador.sueldoBase,
+    trabajador.diasAusencia,
+  );
+  const sueldoBase = parseFloat(trabajador.sueldoBase || 0);
+  const imponible = sueldoBase + horasExtrasValor - diasAusenciaCalc.descuento;
+  const gratificacion25 = imponible * 0.25;
+
+  // No debe superar el tope legal de 4.75 IMM
+  const gratificacionFinal = Math.min(
+    gratificacion25,
+    indicadores.topeGratificacion,
+  );
+
+  return gratificacionFinal;
+};
+const calcularLiquidacion = (trabajador) => {
+  const sueldoBase = parseFloat(trabajador.sueldoBase || 0);
+  const horasExtrasCalc = calcularHorasExtras(
+    sueldoBase,
+    parseFloat(trabajador.numHorasExtras || 0),
+  );
+  const bonos = parseFloat(trabajador.bonos || 0);
+
+  // Calcular días de ausencia
+  const diasAusenciaCalc = calcularDiasAusencia(
+    sueldoBase,
+    trabajador.diasAusencia,
+  );
+
+  // Calcular gratificación
+  let gratificacion = 0;
+  let gratificacionCalculada = 0;
+
+  if (trabajador.tieneGratificacionLegal) {
+    gratificacionCalculada = calcularGratificacionLegal(
+      trabajador,
+      horasExtrasCalc.valor,
+    );
+    gratificacion = gratificacionCalculada;
+  } else if (trabajador.tieneGratificacionManual) {
+    gratificacion = parseFloat(trabajador.gratificacion || 0);
+  }
+
+  const totalHaberesBruto =
+    sueldoBase + horasExtrasCalc.valor + bonos + gratificacion;
+  const totalHaberes = totalHaberesBruto - diasAusenciaCalc.descuento;
+
+  const colacion = parseFloat(trabajador.colacion || 0);
+  const movilizacion = parseFloat(trabajador.movilizacion || 0);
+  const asigFamiliar = calcularAsignacionFamiliar(
+    totalHaberes,
+    parseInt(trabajador.asigFamiliar || 0),
+  );
+
+  const sueldoImponible = Math.min(totalHaberes, indicadores.topeImponible);
+
+  let descuentoAFP = 0;
+  let descuentoCesantia = 0;
+  let aporteCesantiaEmpleador = 0;
+  let aporteSISEmpleador = 0;
+
+  // Si NO es jubilado, calcular AFP, SIS y Cesantía
+  if (!trabajador.esJubilado) {
+    const afpData = indicadores.afps[trabajador.afp];
+    descuentoAFP = sueldoImponible * (afpData.trabajador / 100);
+
+    if (trabajador.tipoContrato === "indefinido") {
+      descuentoCesantia = sueldoImponible * 0.006;
+      aporteCesantiaEmpleador = sueldoImponible * 0.024;
+    } else if (trabajador.tipoContrato === "plazo_fijo") {
+      descuentoCesantia = 0;
+      aporteCesantiaEmpleador = sueldoImponible * 0.03;
+    }
+
+    aporteSISEmpleador = sueldoImponible * (afpData.sis / 100);
+  }
+
+  let descuentoSalud = 0;
+  if (trabajador.isapre === "Fonasa") {
+    descuentoSalud = sueldoImponible * 0.07;
+  } else {
+    descuentoSalud =
+      sueldoImponible * (parseFloat(trabajador.planIsapre) / 100);
+  }
+
+  const anticipos = parseFloat(trabajador.anticipos || 0);
+  const prestamos = parseFloat(trabajador.prestamos || 0);
+
+  const totalDescuentos =
+    descuentoAFP + descuentoSalud + descuentoCesantia + anticipos + prestamos;
+  const totalHaberesLiquido =
+    totalHaberes + colacion + movilizacion + asigFamiliar;
+  const sueldoLiquido = totalHaberesLiquido - totalDescuentos;
+
+  // Costos empleador (si NO es jubilado)
+
+  if (!trabajador.esJubilado) {
+    const afpData = indicadores.afps[trabajador.afp];
+    aporteCesantiaEmpleador =
+      sueldoImponible * (indicadores.seguroCesantia.empleadorIndefinido / 100);
+    aporteSISEmpleador = sueldoImponible * (afpData.empleador / 100);
+  }
+
+  const saludEmpleador = sueldoImponible * (indicadores.salud.ccaf / 100);
+
+  return {
+    sueldoBase,
+    horasExtras: horasExtrasCalc,
+    bonos,
+    gratificacion,
+    gratificacionCalculada,
+    diasAusencia: diasAusenciaCalc,
+    totalHaberes,
+    sueldoImponible,
+    colacion,
+    movilizacion,
+    asigFamiliar,
+    totalHaberesLiquido,
+    descuentoAFP,
+    descuentoSalud,
+    descuentoCesantia,
+    anticipos,
+    prestamos,
+    totalDescuentos,
+    sueldoLiquido,
+    aporteCesantiaEmpleador,
+    aporteSISEmpleador,
+    saludEmpleador,
+    costoTotalEmpleador:
+      totalHaberes +
+      aporteCesantiaEmpleador +
+      aporteSISEmpleador +
+      saludEmpleador +
+      asigFamiliar,
+  };
+};
