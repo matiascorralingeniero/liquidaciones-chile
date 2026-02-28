@@ -1,5 +1,5 @@
 // Indicadores Previred Enero 2026
-const indicadores = {
+export const indicadores = {
   uf: 39706.07,
   utm: 69751,
   topeImponible: 3569576,

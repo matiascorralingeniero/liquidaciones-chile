@@ -1,6 +1,6 @@
 import { indicadores } from "./indicadores.js";
 
-const calcularAsignacionFamiliar = (sueldoImponible, numCargas) => {
+export const calcularAsignacionFamiliar = (sueldoImponible, numCargas) => {
   if (numCargas === 0) return 0;
   const tramo = indicadores.asignacionFamiliar.find(
     (t) => sueldoImponible <= t.limite,
@@ -8,7 +8,7 @@ const calcularAsignacionFamiliar = (sueldoImponible, numCargas) => {
   return tramo ? tramo.monto * numCargas : 0;
 };
 
-const calcularHorasExtras = (sueldoBase, numHoras) => {
+export const calcularHorasExtras = (sueldoBase, numHoras) => {
   if (numHoras === 0 || sueldoBase === 0) return { valor: 0, cantidad: 0 };
 
   // Calcular valor hora base segun leg. chilena
@@ -24,7 +24,7 @@ const calcularHorasExtras = (sueldoBase, numHoras) => {
   };
 };
 
-const calcularDiasAusencia = (sueldoBase, diasAusencia) => {
+export const calcularDiasAusencia = (sueldoBase, diasAusencia) => {
   const dias = parseInt(diasAusencia || 0);
 
   if (dias === 0) {
@@ -47,7 +47,7 @@ const calcularDiasAusencia = (sueldoBase, diasAusencia) => {
   return { descuento: 0, dias: 0, error: null };
 };
 
-const calcularGratificacionLegal = (trabajador, horasExtrasValor) => {
+export const calcularGratificacionLegal = (trabajador, horasExtrasValor) => {
   // Calcular 25% del imponible (base + horas extras)
   const diasAusenciaCalc = calcularDiasAusencia(
     trabajador.sueldoBase,
@@ -65,7 +65,7 @@ const calcularGratificacionLegal = (trabajador, horasExtrasValor) => {
 
   return gratificacionFinal;
 };
-const calcularLiquidacion = (trabajador) => {
+export const calcularLiquidacion = (trabajador) => {
   const sueldoBase = parseFloat(trabajador.sueldoBase || 0);
   const horasExtrasCalc = calcularHorasExtras(
     sueldoBase,
