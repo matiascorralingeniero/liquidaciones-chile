@@ -18,7 +18,6 @@ function App() {
       rut: "",
       cargo: "",
       afp: "Capital",
-      isapre: "Fonasa",
       planIsapre: 7.0,
       sueldoBase: 0,
       horasExtras: 0,
