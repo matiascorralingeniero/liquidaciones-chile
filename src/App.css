@@ -1,526 +1,155 @@
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
+/* Variables personalizadas */
+:root {
+  --bs-primary: #0039a6;
+  --bs-primary-rgb: 0, 57, 166;
+  --bs-secondary: #d52b1e;
+  --bs-success: #00a859;
+  --bs-info: #3b82f6;
+  --bs-warning: #f59e0b;
+  --bs-danger: #ef4444;
 }
 
-body {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
+/* Background principal */
 .app-container {
   min-height: 100vh;
-  background-image: url('assets/istockphoto-2221632865-1024x1024.svg');
-  background-size: cover;
-  padding: 2rem 1rem;
+  background: linear-gradient(135deg, #0f1c2e 0%, #1a2f4a 50%, #0f1c2e 100%);
+  background-attachment: fixed;
+  position: relative;
 }
 
-.content-wrapper {
-  max-width: 1400px;
-  margin: 0 auto;
+/* Efecto de luz sutil en el background */
+.app-container::before {
+  content: "";
+  position: fixed;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(
+    circle,
+    rgba(0, 168, 89, 0.08) 0%,
+    transparent 50%
+  );
+  animation: rotate 30s linear infinite;
+  pointer-events: none;
+  z-index: 0;
 }
 
-/* Header Card */
-.header-card {
-  background: white;
-  border-radius: 12px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-  padding: 2rem;
-  margin-bottom: 2rem;
+@keyframes rotate {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
-.header-content {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 2rem;
-  flex-wrap: wrap;
-  gap: 1rem;
+/* Asegurar que el contenido esté por encima del background */
+.container {
+  position: relative;
+  z-index: 1;
 }
 
-.header-title-section {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-}
-
-.header-icon {
-  color: #667eea;
-}
-
-.main-title {
-  font-size: 2rem;
-  font-weight: 800;
-  color: #1a202c;
-  margin: 0;
-}
-
-.subtitle {
-  font-size: 0.9rem;
-  color: #718096;
-  margin: 0.25rem 0 0 0;
-}
-
-.btn-export {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  background: #48bb78;
-  color: white;
+/* Mejorar cards de Bootstrap */
+.card {
   border: none;
-  padding: 0.75rem 1.5rem;
-  border-radius: 8px;
-  font-size: 1rem;
-  font-weight: 600;
-  cursor: pointer;
+  border-radius: 16px !important;
   transition: all 0.3s ease;
 }
 
-.btn-export:hover {
-  background: #38a169;
+.card:hover {
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(72, 187, 120, 0.4);
+  box-shadow: 0 12px 35px rgba(0, 0, 0, 0.15) !important;
 }
 
-/* Indicadores Grid */
-.indicadores-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 1rem;
-  padding: 1.5rem;
-  background: #edf2f7;
-  border-radius: 8px;
-}
-
-.indicador-item {
-  text-align: center;
-}
-
-.indicador-label {
-  font-size: 0.85rem;
-  color: #4a5568;
-  margin-bottom: 0.25rem;
-}
-
-.indicador-value {
-  font-size: 1.25rem;
-  font-weight: 700;
-  color: #667eea;
-}
-
-/* Trabajador Card */
-.trabajador-card {
-  background: white;
+/* Botones personalizados */
+.btn {
   border-radius: 12px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-  padding: 2rem;
-  margin-bottom: 2rem;
-}
-
-.trabajador-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 2rem;
-}
-
-.trabajador-title {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  font-size: 1.5rem;
-  font-weight: 700;
-  color: #2d3748;
-}
-
-.trabajador-title svg {
-  color: #667eea;
-}
-
-.btn-delete {
-  background: #fed7d7;
-  color: #c53030;
+  font-weight: 600;
+  padding: 0.75rem 1.5rem;
+  transition: all 0.3s ease;
   border: none;
-  padding: 0.5rem;
-  border-radius: 8px;
-  cursor: pointer;
+}
+
+.btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, #0039a6, #0052cc);
+}
+
+.btn-success {
+  background: linear-gradient(135deg, #00a859, #10b981);
+}
+
+.btn-danger {
+  background: linear-gradient(135deg, #ef4444, #dc2626);
+}
+
+/* Form Controls mejorados */
+.form-control,
+.form-select {
+  border-radius: 10px;
+  border: 2px solid #e2e8f0;
+  padding: 0.75rem 1rem;
   transition: all 0.3s ease;
 }
 
-.btn-delete:hover {
-  background: #fc8181;
-  color: white;
+.form-control:focus,
+.form-select:focus {
+  border-color: var(--bs-primary);
+  box-shadow: 0 0 0 0.25rem rgba(0, 57, 166, 0.15);
+  transform: translateY(-1px);
 }
 
-/* Form Grids */
-.form-grid-2 {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 1rem;
-  margin-bottom: 1.5rem;
-}
-
-.form-grid-3 {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 1rem;
-  margin-bottom: 1.5rem;
-}
-
-.form-grid-4 {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-  gap: 1rem;
-  margin-bottom: 1.5rem;
-}
-
-.form-group {
-  display: flex;
-  flex-direction: column;
-}
-
-.form-group label {
-  font-size: 0.9rem;
-  font-weight: 600;
+/* Form labels */
+.form-label {
   color: #4a5568;
+  font-weight: 600;
   margin-bottom: 0.5rem;
 }
 
-.form-group input,
-.form-group select {
-  padding: 0.75rem;
-  border: 2px solid #e2e8f0;
-  border-radius: 8px;
-  font-size: 1rem;
-  transition: all 0.3s ease;
-}
-
-.form-group input:focus,
-.form-group select:focus {
-  outline: none;
-  border-color: #667eea;
-  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
-}
-
-/* Section Styles */
-.section-haberes,
-.section-descuentos {
-  padding: 1.5rem;
-  border-radius: 8px;
-  margin-bottom: 1.5rem;
-}
-
-.section-haberes {
-  background: #f0fff4;
-  border: 2px solid #9ae6b4;
-}
-
-.section-descuentos {
-  background: #fff5f5;
-  border: 2px solid #fc8181;
-}
-
-.section-title {
-  font-size: 1.1rem;
-  font-weight: 700;
-  margin-bottom: 1rem;
-}
-
-.section-haberes .section-title {
-  color: #22543d;
-}
-
-.section-descuentos .section-title {
-  color: #742a2a;
-}
-
-/* Liquidación Result */
-.liquidacion-result {
-  background: #edf2f7;
-  border-radius: 8px;
-  padding: 2rem;
-  margin-top: 1.5rem;
-}
-
-.result-title {
-font-size: 1.3rem;
-font-weight: 700;
-color: #2d3748;
-margin-bottom: 1.5rem;
-text-align: center;
-}
-.result-grid {
-display: grid;
-grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-gap: 2rem;
-margin-bottom: 2rem;
-}
-.result-column {
-background: white;
-padding: 1.5rem;
-border-radius: 8px;
-}
-.column-title {
-font-size: 1.1rem;
-font-weight: 700;
-margin-bottom: 1rem;
-padding-bottom: 0.5rem;
-border-bottom: 3px solid;
-}
-.haberes-title {
-color: #22543d;
-border-color: #9ae6b4;
-}
-.descuentos-title {
-color: #742a2a;
-border-color: #fc8181;
-}
-.result-items {
-display: flex;
-flex-direction: column;
-gap: 0.75rem;
-}
-.result-item {
-display: flex;
-justify-content: space-between;
-align-items: center;
-font-size: 0.95rem;
-color: #4a5568;
-}
-.result-value {
-font-weight: 600;
-color: #2d3748;
-}
-.result-total {
-margin-top: 0.5rem;
-padding-top: 0.75rem;
-border-top: 2px solid;
-font-weight: 700;
-font-size: 1.05rem;
-}
-.haberes-total {
-border-color: #9ae6b4;
-}
-.haberes-total .result-value {
-color: #22543d;
-}
-.descuentos-total {
-border-color: #fc8181;
-}
-.descuentos-total .result-value {
-color: #742a2a;
-}
-/* Sueldo Líquido */
-.sueldo-liquido {
-background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-color: white;
-padding: 1.5rem 2rem;
-border-radius: 8px;
-display: flex;
-justify-content: space-between;
-align-items: center;
-margin-bottom: 1.5rem;
-flex-wrap: wrap;
-gap: 1rem;
-}
-.liquido-label {
-font-size: 1.3rem;
-font-weight: 700;
-}
-.liquido-value {
-font-size: 2rem;
-font-weight: 800;
-}
-/* Costos Empleador */
-.costos-empleador {
-background: #f7fafc;
-padding: 1.5rem;
-border-radius: 8px;
-border: 2px solid #cbd5e0;
-}
-.empleador-title {
-font-size: 1.1rem;
-font-weight: 700;
-color: #4a5568;
-margin-bottom: 1rem;
-}
-.empleador-items {
-display: flex;
-flex-direction: column;
-gap: 0.75rem;
-}
-.empleador-item {
-display: flex;
-justify-content: space-between;
-align-items: center;
-font-size: 0.95rem;
-color: #4a5568;
-}
-.empleador-total {
-margin-top: 0.5rem;
-padding-top: 0.75rem;
-border-top: 2px solid #cbd5e0;
-font-weight: 700;
-font-size: 1.05rem;
-color: #2d3748;
-}
-/* Add Button */
-.add-button-container {
-display: flex;
-justify-content: center;
-margin-bottom: 2rem;
-}
-.btn-add {
-display: flex;
-align-items: center;
-gap: 0.75rem;
-background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-color: white;
-border: none;
-padding: 1rem 2rem;
-border-radius: 8px;
-font-size: 1.1rem;
-font-weight: 700;
-cursor: pointer;
-transition: all 0.3s ease;
-box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
-}
-.btn-add:hover {
-transform: translateY(-3px);
-box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
-}
-/* Instructions Card */
-.instructions-card {
-background: white;
-border-radius: 12px;
-box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-padding: 2rem;
-}
-.instructions-title {
-display: flex;
-align-items: center;
-gap: 0.75rem;
-font-size: 1.3rem;
-font-weight: 700;
-color: #2d3748;
-margin-bottom: 1.5rem;
-}
-.instructions-title svg {
-color: #667eea;
-}
-.instructions-list {
-list-style: none;
-display: flex;
-flex-direction: column;
-gap: 0.75rem;
-}
-.instructions-list li {
-font-size: 0.95rem;
-color: #4a5568;
-line-height: 1.6;
-padding-left: 0.5rem;
-}
-/* Responsive Design */
-@media (max-width: 768px) {
-.app-container {
-padding: 1rem 0.5rem;
-}
-.header-card,
-.trabajador-card,
-.instructions-card {
-padding: 1.5rem;
-}
-.main-title {
-font-size: 1.5rem;
-}
-.header-content {
-flex-direction: column;
-align-items: flex-start;
-}
-.indicadores-grid {
-grid-template-columns: repeat(2, 1fr);
-}
-.result-grid {
-grid-template-columns: 1fr;
-}
-.sueldo-liquido {
-flex-direction: column;
-align-items: flex-start;
-}
-.liquido-label {
-font-size: 1.1rem;
-}
-.liquido-value {
-font-size: 1.75rem;
-}
-}
-/* Print Styles */
-@media print {
-.app-container {
-background: white;
-padding: 0;
-}
-.btn-export,
-.btn-add,
-.btn-delete,
-.instructions-card {
-display: none !important;
-}
-.trabajador-card {
-page-break-inside: avoid;
-box-shadow: none;
-border: 1px solid #e2e8f0;
-margin-bottom: 1rem;
-}
-.header-card {
-box-shadow: none;
-border: 1px solid #e2e8f0;
-}
-}
-/* Estilos para checkbox */
-.checkbox-label {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
+/* Checkboxes personalizados */
+.form-check-input {
+  width: 1.5rem;
+  height: 1.5rem;
+  margin-top: 0;
   cursor: pointer;
-  font-weight: 600;
-  color: #4a5568;
-  padding: 0.75rem;
-  background: #fff5f5;
-  border: 2px solid #fc8181;
-  border-radius: 8px;
-  transition: all 0.3s ease;
+  border: 2px solid #cbd5e0;
 }
 
-.checkbox-label:hover {
-  background: #fed7d7;
+.form-check-input:checked {
+  background-color: var(--bs-primary);
+  border-color: var(--bs-primary);
 }
 
-.checkbox-label input[type="checkbox"] {
-  width: 20px;
-  height: 20px;
+.form-check-label {
   cursor: pointer;
-}
-
-.jubilado-tag {
-  color: #c05621;
+  margin-left: 0.5rem;
   font-weight: 600;
-  background: #feebc8;
-  padding: 0.25rem 0.5rem;
-  border-radius: 4px;
-  font-size: 0.85rem;
 }
 
-.empresa-info {
-  margin-bottom: 1.5rem;
-  padding: 1.5rem;
-  background: #f7fafc;
+/* Badges mejorados */
+.badge {
+  padding: 0.5rem 1rem;
+  font-weight: 600;
   border-radius: 8px;
-  border: 2px solid #e2e8f0;
+}
+
+/* Alerts mejorados */
+.alert {
+  border-radius: 12px;
+  border: none;
+  font-weight: 500;
+}
+
+/* Headers de cards */
+.card-header {
+  border-radius: 16px 16px 0 0 !important;
+  border: none;
+  padding: 1.25rem 1.5rem;
 }
 
 /* Estilos para impresión */
@@ -533,7 +162,6 @@ border: 1px solid #e2e8f0;
 }
 
 @media print {
-  /* Ocultar todo excepto la liquidación */
   .no-print {
     display: none !important;
   }
@@ -543,15 +171,19 @@ border: 1px solid #e2e8f0;
   }
 
   .app-container {
-    background: white;
+    background: white !important;
     padding: 0;
+  }
+
+  .app-container::before {
+    display: none;
   }
 
   body {
     background: white;
   }
 
-  /* Estilos de la liquidación imprimible */
+  /* Estilos de liquidación imprimible */
   .liquidacion-imprimible {
     padding: 2cm 1.5cm;
     max-width: 21cm;
@@ -671,6 +303,16 @@ border: 1px solid #e2e8f0;
     font-weight: 600;
   }
 
+  .row-ausencia {
+    background: #fff5f5;
+    color: #c53030;
+    font-weight: 600;
+  }
+
+  .row-ausencia td {
+    border-left: 3px solid #fc8181;
+  }
+
   .liquido-final {
     margin: 2rem 0;
     display: flex;
@@ -746,67 +388,34 @@ border: 1px solid #e2e8f0;
   margin: 0;
 }
 
-/* Estilos adicionales para gratificación y horas extras */
-.checkbox-gratificacion {
-  background: #e6fffa;
-  border-color: #38b2ac;
+/* Responsive */
+@media (max-width: 768px) {
+  .btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .card-header {
+    flex-direction: column;
+    gap: 1rem;
+    text-align: center;
+  }
 }
 
-.checkbox-gratificacion:hover {
-  background: #b2f5ea;
+/* Scrollbar personalizado */
+::-webkit-scrollbar {
+  width: 10px;
 }
 
-.helper-text {
-  display: block;
-  margin-top: 0.25rem;
-  font-size: 0.8rem;
-  color: #4a5568;
-  font-style: italic;
-}
-.checkbox-gratificacion-manual {
-  background: #fef5e7;
-  border-color: #f39c12;
+::-webkit-scrollbar-track {
+  background: #1a2f4a;
 }
 
-.checkbox-gratificacion-manual:hover {
-  background: #fdeaa8;
+::-webkit-scrollbar-thumb {
+  background: #0039a6;
+  border-radius: 5px;
 }
 
-/* Estilos para mensajes de error */
-.error-text {
-  display: flex;
-  align-items: center;
-  gap: 0.25rem;
-  margin-top: 0.25rem;
-  font-size: 0.8rem;
-  color: #c53030;
-  font-weight: 600;
-  background: #fed7d7;
-  padding: 0.25rem 0.5rem;
-  border-radius: 4px;
+::-webkit-scrollbar-thumb:hover {
+  background: #0052cc;
 }
-
-/* Estilos para descuento por ausencia */
-.descuento-ausencia {
-  background: #fff5f5;
-  padding: 0.5rem;
-  border-radius: 4px;
-  border-left: 3px solid #fc8181;
-}
-
-.descuento-ausencia span:last-child {
-  color: #c53030;
-  font-weight: 700;
-}
-
-/* Estilos para tabla impresa - row ausencia */
-.row-ausencia {
-  background: #fff5f5;
-  color: #c53030;
-  font-weight: 600;
-}
-
-.row-ausencia td {
-  border-left: 3px solid #fc8181;
-}
-
