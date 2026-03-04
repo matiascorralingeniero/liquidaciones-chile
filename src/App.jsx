@@ -85,12 +85,20 @@ function App() {
         if (t.id === id) {
           let updates = { [campo]: valor };
 
+          // Gratificación: solo una puede estar activa
           if (campo === "tieneGratificacionLegal" && valor === true) {
             updates.tieneGratificacionManual = false;
+            updates.gratificacion = 0; // Limpiar gratificación manual
           }
 
           if (campo === "tieneGratificacionManual" && valor === true) {
             updates.tieneGratificacionLegal = false;
+          }
+
+          // Horas extras: solo un tipo puede estar activo (aunque no son mutuamente excluyentes en este caso)
+          // Si desactiva horas pactadas, limpiar el valor
+          if (campo === "tieneHorasExtrasPactadas" && valor === false) {
+            updates.valorHoraExtraPactada = 0;
           }
 
           return { ...t, ...updates };

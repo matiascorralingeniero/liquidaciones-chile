@@ -53,6 +53,7 @@ export const calcularGratificacionLegal = (trabajador, horasExtrasValor) => {
     trabajador.sueldoBase,
     trabajador.diasAusencia,
   );
+
   const sueldoBase = parseFloat(trabajador.sueldoBase || 0);
   const imponible = sueldoBase + horasExtrasValor - diasAusenciaCalc.descuento;
   const gratificacion25 = imponible * 0.25;
@@ -101,7 +102,7 @@ export const calcularLiquidacion = (trabajador) => {
 
   if (trabajador.tieneGratificacionLegal) {
     gratificacionCalculada = calcularGratificacionLegal(
-      sueldoBase,
+      trabajador,
       horasExtrasCalc.valor,
     );
     gratificacion = gratificacionCalculada;
@@ -160,6 +161,11 @@ export const calcularLiquidacion = (trabajador) => {
   const sueldoLiquido = totalHaberesLiquido - totalDescuentos;
 
   const saludEmpleador = sueldoImponible * (indicadores.salud.ccaf / 100);
+
+  console.log("Gratificación Legal:", trabajador.tieneGratificacionLegal);
+  console.log("Gratificación Calculada:", gratificacionCalculada);
+  console.log("Gratificación Manual:", trabajador.tieneGratificacionManual);
+  console.log("Gratificación Final:", gratificacion);
 
   return {
     sueldoBase,
