@@ -1,5 +1,5 @@
 import React from "react";
-import { Row, Col, Form, Alert } from "react-bootstrap";
+import { Row, Col, Form } from "react-bootstrap";
 import { indicadores } from "../utils/indicadores";
 
 const Haberes = ({ trabajador, liquidacion, onUpdate }) => {
@@ -23,9 +23,7 @@ const Haberes = ({ trabajador, liquidacion, onUpdate }) => {
 
         <Col md={4}>
           <Form.Group>
-            <Form.Label className="fw-semibold">
-              N° Horas Extras (50% recargo)
-            </Form.Label>
+            <Form.Label className="fw-semibold">N° Horas Extras</Form.Label>
             <Form.Control
               type="number"
               value={trabajador.numHorasExtras}
@@ -35,19 +33,75 @@ const Haberes = ({ trabajador, liquidacion, onUpdate }) => {
             />
             {liquidacion.horasExtras.cantidad > 0 && (
               <Form.Text className="text-muted">
-                Valor: $
-                {Math.round(liquidacion.horasExtras.valor).toLocaleString(
-                  "es-CL",
+                {liquidacion.horasExtras.esPactada ? (
+                  <>
+                    Valor: $
+                    {Math.round(liquidacion.horasExtras.valor).toLocaleString(
+                      "es-CL",
+                    )}
+                    ({liquidacion.horasExtras.cantidad} hrs × $
+                    {Math.round(
+                      liquidacion.horasExtras.valorUnitario,
+                    ).toLocaleString("es-CL")}{" "}
+                    pactado)
+                  </>
+                ) : (
+                  <>
+                    Valor: $
+                    {Math.round(liquidacion.horasExtras.valor).toLocaleString(
+                      "es-CL",
+                    )}
+                    ({liquidacion.horasExtras.cantidad} hrs × $
+                    {Math.round(
+                      liquidacion.horasExtras.valorUnitario,
+                    ).toLocaleString("es-CL")}{" "}
+                    [+50%])
+                  </>
                 )}
-                ({liquidacion.horasExtras.cantidad} hrs × $
-                {Math.round(
-                  liquidacion.horasExtras.valorUnitario,
-                ).toLocaleString("es-CL")}
-                )
               </Form.Text>
             )}
           </Form.Group>
         </Col>
+
+        <Col md={4}>
+          <Form.Check
+            type="checkbox"
+            id={`horas-pactadas-${trabajador.id}`}
+            label="Hora Extra Pactada"
+            checked={trabajador.tieneHorasExtrasPactadas}
+            onChange={(e) =>
+              onUpdate("tieneHorasExtrasPactadas", e.target.checked)
+            }
+            className="mt-4"
+          />
+          {trabajador.tieneHorasExtrasPactadas && (
+            <Form.Text className="text-success d-block">
+              ℹ️ Para contratos parciales o valor pactado
+            </Form.Text>
+          )}
+        </Col>
+
+        {trabajador.tieneHorasExtrasPactadas && (
+          <Col md={4}>
+            <Form.Group>
+              <Form.Label className="fw-semibold">
+                Valor Hora Extra Pactada
+              </Form.Label>
+              <Form.Control
+                type="number"
+                value={trabajador.valorHoraExtraPactada}
+                onChange={(e) =>
+                  onUpdate("valorHoraExtraPactada", e.target.value)
+                }
+                min="0"
+                placeholder="Valor por hora"
+              />
+              <Form.Text className="text-muted">
+                Valor pactado por cada hora extra
+              </Form.Text>
+            </Form.Group>
+          </Col>
+        )}
 
         <Col md={4}>
           <Form.Group>

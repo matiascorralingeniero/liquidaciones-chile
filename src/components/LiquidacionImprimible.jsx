@@ -75,8 +75,8 @@ const LiquidacionImprimible = ({
                 Horas Extras ({liquidacion.horasExtras.cantidad} hrs × $
                 {Math.round(
                   liquidacion.horasExtras.valorUnitario,
-                ).toLocaleString("es-CL")}{" "}
-                [+50%])
+                ).toLocaleString("es-CL")}
+                {liquidacion.horasExtras.esPactada ? " [Pactado]" : " [+50%]"})
               </td>
               <td className="monto">
                 $

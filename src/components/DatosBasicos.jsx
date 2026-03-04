@@ -113,7 +113,7 @@ const DatosBasicos = ({ trabajador, onUpdate }) => {
               onChange={(e) => onUpdate("tipoContrato", e.target.value)}
             >
               <option value="indefinido">Indefinido</option>
-              <option value="plazo_fijo">Plazo Fijo</option>
+              <option value="plazo_fijo">Plazo Fijo/Obra o faena</option>
             </Form.Select>
             {trabajador.tipoContrato === "plazo_fijo" && (
               <Form.Text className="text-muted">

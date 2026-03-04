@@ -67,25 +67,41 @@ export const calcularGratificacionLegal = (trabajador, horasExtrasValor) => {
 };
 export const calcularLiquidacion = (trabajador) => {
   const sueldoBase = parseFloat(trabajador.sueldoBase || 0);
-  const horasExtrasCalc = calcularHorasExtras(
-    sueldoBase,
-    parseFloat(trabajador.numHorasExtras || 0),
-  );
+
+  // Calcular horas extras según tipo
+  let horasExtrasCalc;
+  if (trabajador.tieneHorasExtrasPactadas) {
+    // Horas extras pactadas manualmente
+    const valorPactado = parseFloat(trabajador.valorHoraExtraPactada || 0);
+    const cantidad = parseFloat(trabajador.numHorasExtras || 0);
+    horasExtrasCalc = {
+      valor: valorPactado * cantidad,
+      cantidad: cantidad,
+      valorUnitario: valorPactado,
+      esPactada: true,
+    };
+  } else {
+    // Horas extras calculadas automáticamente (50%)
+    horasExtrasCalc = calcularHorasExtras(
+      sueldoBase,
+      parseFloat(trabajador.numHorasExtras || 0),
+    );
+    horasExtrasCalc.esPactada = false;
+  }
+
   const bonos = parseFloat(trabajador.bonos || 0);
 
-  // Calcular días de ausencia
   const diasAusenciaCalc = calcularDiasAusencia(
     sueldoBase,
     trabajador.diasAusencia,
   );
 
-  // Calcular gratificación
   let gratificacion = 0;
   let gratificacionCalculada = 0;
 
   if (trabajador.tieneGratificacionLegal) {
     gratificacionCalculada = calcularGratificacionLegal(
-      trabajador,
+      sueldoBase,
       horasExtrasCalc.valor,
     );
     gratificacion = gratificacionCalculada;
@@ -111,7 +127,6 @@ export const calcularLiquidacion = (trabajador) => {
   let aporteCesantiaEmpleador = 0;
   let aporteSISEmpleador = 0;
 
-  // Si NO es jubilado, calcular AFP, SIS y Cesantía
   if (!trabajador.esJubilado) {
     const afpData = indicadores.afps[trabajador.afp];
     descuentoAFP = sueldoImponible * (afpData.trabajador / 100);
@@ -143,15 +158,6 @@ export const calcularLiquidacion = (trabajador) => {
   const totalHaberesLiquido =
     totalHaberes + colacion + movilizacion + asigFamiliar;
   const sueldoLiquido = totalHaberesLiquido - totalDescuentos;
-
-  // Costos empleador (si NO es jubilado)
-
-  if (!trabajador.esJubilado) {
-    const afpData = indicadores.afps[trabajador.afp];
-    aporteCesantiaEmpleador =
-      sueldoImponible * (indicadores.seguroCesantia.empleadorIndefinido / 100);
-    aporteSISEmpleador = sueldoImponible * (afpData.empleador / 100);
-  }
 
   const saludEmpleador = sueldoImponible * (indicadores.salud.ccaf / 100);
 

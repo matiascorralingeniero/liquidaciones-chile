@@ -29,7 +29,11 @@ const LiquidacionResult = ({ trabajador, liquidacion }) => {
               {liquidacion.horasExtras.cantidad > 0 && (
                 <div className="d-flex justify-content-between mb-2">
                   <span>
-                    Horas Extras ({liquidacion.horasExtras.cantidad} hrs):
+                    Horas Extras ({liquidacion.horasExtras.cantidad} hrs
+                    {liquidacion.horasExtras.esPactada
+                      ? " pactadas"
+                      : " al 50%"}
+                    ):
                   </span>
                   <strong>
                     $
