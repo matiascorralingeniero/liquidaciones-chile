@@ -1,8 +1,14 @@
 import React from "react";
 import { Row, Col, Form } from "react-bootstrap";
 import { indicadores } from "../utils/indicadores";
+import { formatearRUT } from "../utils/formatear";
 
 const DatosBasicos = ({ trabajador, onUpdate }) => {
+  const handleRutChange = (e) => {
+    const rutFormateado = formatearRUT(e.target.value);
+    onUpdate("rut", rutFormateado);
+  };
+
   return (
     <>
       <Row className="mb-4">
@@ -23,8 +29,9 @@ const DatosBasicos = ({ trabajador, onUpdate }) => {
             <Form.Control
               type="text"
               value={trabajador.rut}
-              onChange={(e) => onUpdate("rut", e.target.value)}
+              onChange={handleRutChange}
               placeholder="12.345.678-9"
+              maxLength={12}
             />
           </Form.Group>
         </Col>

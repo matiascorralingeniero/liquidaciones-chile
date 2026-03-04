@@ -1,6 +1,7 @@
 import React from "react";
-import { Row, Col, Button } from "react-bootstrap";
+import { Row, Col, Button, Form } from "react-bootstrap";
 import { Calculator, Download } from "lucide-react";
+import { formatearRUT } from "../utils/formatear";
 
 const Header = ({
   nombreEmpresa,
@@ -11,6 +12,11 @@ const Header = ({
   onMesChange,
   onImprimir,
 }) => {
+  const handleRutChange = (e) => {
+    const rutFormateado = formatearRUT(e.target.value);
+    onRutChange(rutFormateado);
+  };
+
   return (
     <div className="bg-white rounded-4 shadow-lg p-4 mb-4">
       <Row className="align-items-center mb-4">
@@ -21,7 +27,7 @@ const Header = ({
             </div>
             <div>
               <h1 className="mb-0 fw-bold text-primary">
-                Sistema de Liquidaciones de Sueldo
+                Liquidacion de Sueldo para Pymes
               </h1>
               <small className="text-muted">
                 Indicadores Previred - Enero 2026
@@ -39,30 +45,28 @@ const Header = ({
 
       <Row className="g-3">
         <Col md={4}>
-          <label className="form-label fw-semibold">Nombre Empresa</label>
-          <input
+          <Form.Label className="fw-semibold">Nombre Empresa</Form.Label>
+          <Form.Control
             type="text"
-            className="form-control"
             value={nombreEmpresa}
             onChange={(e) => onNombreChange(e.target.value)}
             placeholder="Ej: Contabilidad XYZ Ltda."
           />
         </Col>
         <Col md={4}>
-          <label className="form-label fw-semibold">RUT Empresa</label>
-          <input
+          <Form.Label className="fw-semibold">RUT Empresa</Form.Label>
+          <Form.Control
             type="text"
-            className="form-control"
             value={rutEmpresa}
-            onChange={(e) => onRutChange(e.target.value)}
+            onChange={handleRutChange}
             placeholder="76.123.456-7"
+            maxLength={12}
           />
         </Col>
         <Col md={4}>
-          <label className="form-label fw-semibold">Mes de Pago</label>
-          <input
+          <Form.Label className="fw-semibold">Mes de Pago</Form.Label>
+          <Form.Control
             type="month"
-            className="form-control"
             value={mesPago}
             onChange={(e) => onMesChange(e.target.value)}
           />
