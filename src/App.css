@@ -453,3 +453,299 @@ input[type="month"]::-moz-calendar-picker-indicator {
 ::-webkit-scrollbar-thumb:hover {
   background: #0052cc;
 }
+
+/* ============================================
+   VISTA PREVIA DE LIQUIDACIÓN
+   ============================================ */
+
+/* Container principal más ancho */
+.container {
+  max-width: 1400px !important;
+}
+
+/* Liquidación Result - Vista Previa */
+.liquidacion-result {
+  background: linear-gradient(135deg, #f1f5f9, #ffffff);
+  border-radius: 16px;
+  padding: 2.5rem;
+  margin-top: 2rem;
+  border: 2px solid #e2e8f0;
+  width: 100%;
+  max-width: none;
+}
+
+.result-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #1a202c;
+  margin-bottom: 2rem;
+  text-align: center;
+  font-family: "Inter", sans-serif;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.result-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+  margin-bottom: 2rem;
+}
+
+/* Cards de haberes y descuentos */
+.result-column {
+  background: white;
+  padding: 2rem;
+  border-radius: 16px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+  border: 2px solid #e2e8f0;
+  min-height: 400px;
+}
+
+.column-title {
+  font-size: 1.2rem;
+  font-weight: 700;
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 3px solid;
+  font-family: "Inter", sans-serif;
+}
+
+.haberes-title {
+  color: #00a859;
+  border-color: #00a859;
+}
+
+.descuentos-title {
+  color: #ef4444;
+  border-color: #ef4444;
+}
+
+.result-items {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.result-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  font-size: 1rem;
+  color: #4a5568;
+  padding: 0.75rem;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+  gap: 1rem;
+}
+
+.result-item:hover {
+  background: #f1f5f9;
+}
+
+.result-item span:first-child {
+  flex: 1;
+  min-width: 0;
+}
+
+.result-value {
+  font-weight: 700;
+  color: #1a202c;
+  font-family: "Inter", sans-serif;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.result-total {
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 3px solid;
+  font-weight: 700;
+  font-size: 1.1rem;
+  background: #f1f5f9;
+}
+
+.haberes-total {
+  border-color: #00a859;
+}
+
+.haberes-total .result-value {
+  color: #00a859;
+}
+
+.descuentos-total {
+  border-color: #ef4444;
+}
+
+.descuentos-total .result-value {
+  color: #ef4444;
+}
+
+.descuento-ausencia {
+  background: rgba(239, 68, 68, 0.05);
+  border-left: 4px solid #ef4444;
+}
+
+.descuento-ausencia span:last-child {
+  color: #ef4444;
+  font-weight: 700;
+}
+
+/* Sueldo Líquido */
+.sueldo-liquido {
+  background: linear-gradient(135deg, #0039a6 0%, #00a859 100%);
+  color: white;
+  padding: 2.5rem 3rem;
+  border-radius: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  gap: 2rem;
+  box-shadow:
+    0 20px 50px rgba(0, 57, 166, 0.4),
+    inset 0 -2px 10px rgba(0, 0, 0, 0.2);
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+}
+
+.sueldo-liquido::before {
+  content: "";
+  position: absolute;
+  top: -50%;
+  right: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(
+    circle,
+    rgba(255, 255, 255, 0.1) 0%,
+    transparent 70%
+  );
+  animation: pulse 3s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 0.5;
+  }
+  50% {
+    transform: scale(1.1);
+    opacity: 0.8;
+  }
+}
+
+.liquido-label {
+  font-size: 1.5rem;
+  font-weight: 700;
+  font-family: "Inter", sans-serif;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  position: relative;
+  z-index: 1;
+}
+
+.liquido-value {
+  font-size: 3rem;
+  font-weight: 900;
+  font-family: "Inter", sans-serif;
+  text-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  white-space: nowrap;
+  position: relative;
+  z-index: 1;
+}
+
+/* Costos Empleador */
+.costos-empleador {
+  background: linear-gradient(
+    135deg,
+    rgba(100, 116, 139, 0.05),
+    rgba(100, 116, 139, 0.1)
+  );
+  padding: 2rem;
+  border-radius: 16px;
+  border: 2px solid #cbd5e1;
+  width: 100%;
+}
+
+.empleador-title {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #4a5568;
+  margin-bottom: 1.5rem;
+  font-family: "Inter", sans-serif;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.empleador-items {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.empleador-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 1rem;
+  color: #4a5568;
+  padding: 0.75rem;
+  background: white;
+  border-radius: 8px;
+  font-weight: 500;
+}
+
+.empleador-total {
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 3px solid #94a3b8;
+  font-weight: 700;
+  font-size: 1.1rem;
+  color: #1a202c;
+  background: #f1f5f9;
+}
+
+/* Responsive - Vista Previa */
+@media (max-width: 992px) {
+  .result-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .sueldo-liquido {
+    flex-direction: column;
+    text-align: center;
+    gap: 1rem;
+  }
+
+  .liquido-label {
+    font-size: 1.2rem;
+  }
+
+  .liquido-value {
+    font-size: 2.5rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .liquidacion-result {
+    padding: 1.5rem;
+  }
+
+  .result-column {
+    padding: 1.5rem;
+    min-height: auto;
+  }
+
+  .liquido-value {
+    font-size: 2rem;
+  }
+
+  .sueldo-liquido {
+    padding: 1.5rem 2rem;
+  }
+}
