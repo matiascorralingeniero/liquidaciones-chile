@@ -12,7 +12,7 @@ export const calcularHorasExtras = (sueldoBase, numHoras) => {
   if (numHoras === 0 || sueldoBase === 0) return { valor: 0, cantidad: 0 };
 
   // Calcular valor hora base segun leg. chilena
-  const valorHora = ((sueldoBase / 30) * 28) / 176;
+  const valorHora = ((sueldoBase / 30) * 28) / 168;
 
   // Horas extras se pagan al 50% adicional (1.5 veces el valor hora)
   const valorHoraExtra = valorHora * 1.5;
@@ -39,33 +39,21 @@ export const calcularDiasAusencia = (sueldoBase, diasAusencia) => {
     };
   }
 
-  if (dias > 0 && dias <= 30) {
-    const descuento = (sueldoBase / 30) * dias;
-    return { descuento, dias, error: null };
-  }
-
-  return { descuento: 0, dias: 0, error: null };
+  // FIX: Se eliminó la condición redundante `if (dias > 0 && dias <= 30)`
+  // ya que si llegamos aquí, dias está garantizado en ese rango
+  const descuento = (sueldoBase / 30) * dias;
+  return { descuento, dias, error: null };
 };
 
-export const calcularGratificacionLegal = (trabajador, horasExtrasValor) => {
-  // Calcular 25% del imponible (base + horas extras)
-  const diasAusenciaCalc = calcularDiasAusencia(
-    trabajador.sueldoBase,
-    trabajador.diasAusencia,
-  );
-
-  const sueldoBase = parseFloat(trabajador.sueldoBase || 0);
-  const imponible = sueldoBase + horasExtrasValor - diasAusenciaCalc.descuento;
+// FIX: La función ahora recibe el imponible ya calculado (con ausencias descontadas)
+// en lugar de recalcularlo internamente, evitando inconsistencias con calcularLiquidacion
+export const calcularGratificacionLegal = (imponible) => {
   const gratificacion25 = imponible * 0.25;
 
   // No debe superar el tope legal de 4.75 IMM
-  const gratificacionFinal = Math.min(
-    gratificacion25,
-    indicadores.topeGratificacion,
-  );
-
-  return gratificacionFinal;
+  return Math.min(gratificacion25, indicadores.topeGratificacion);
 };
+
 export const calcularLiquidacion = (trabajador) => {
   const sueldoBase = parseFloat(trabajador.sueldoBase || 0);
 
@@ -92,27 +80,30 @@ export const calcularLiquidacion = (trabajador) => {
 
   const bonos = parseFloat(trabajador.bonos || 0);
 
+  // FIX: Se calcula la ausencia primero para tener la base correcta
   const diasAusenciaCalc = calcularDiasAusencia(
     sueldoBase,
     trabajador.diasAusencia,
   );
 
+  // FIX: Se calcula el imponible base ANTES de la gratificación,
+  // ya con el descuento de ausencia aplicado
+  const baseImponible =
+    sueldoBase + horasExtrasCalc.valor - diasAusenciaCalc.descuento;
+
   let gratificacion = 0;
   let gratificacionCalculada = 0;
 
   if (trabajador.tieneGratificacionLegal) {
-    gratificacionCalculada = calcularGratificacionLegal(
-      trabajador,
-      horasExtrasCalc.valor,
-    );
+    // FIX: Se pasa baseImponible (ya descontado) en lugar del trabajador completo
+    gratificacionCalculada = calcularGratificacionLegal(baseImponible);
     gratificacion = gratificacionCalculada;
   } else if (trabajador.tieneGratificacionManual) {
     gratificacion = parseFloat(trabajador.gratificacion || 0);
   }
 
-  const totalHaberesBruto =
-    sueldoBase + horasExtrasCalc.valor + bonos + gratificacion;
-  const totalHaberes = totalHaberesBruto - diasAusenciaCalc.descuento;
+  // FIX: totalHaberes ahora suma sobre baseImponible que ya incluye el descuento de ausencia
+  const totalHaberes = baseImponible + bonos + gratificacion;
 
   const colacion = parseFloat(trabajador.colacion || 0);
   const movilizacion = parseFloat(trabajador.movilizacion || 0);
@@ -162,10 +153,7 @@ export const calcularLiquidacion = (trabajador) => {
 
   const saludEmpleador = sueldoImponible * (indicadores.salud.ccaf / 100);
 
-  console.log("Gratificación Legal:", trabajador.tieneGratificacionLegal);
-  console.log("Gratificación Calculada:", gratificacionCalculada);
-  console.log("Gratificación Manual:", trabajador.tieneGratificacionManual);
-  console.log("Gratificación Final:", gratificacion);
+  // FIX: Se eliminaron los console.log de depuración
 
   return {
     sueldoBase,
